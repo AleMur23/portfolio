@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alejandro Mur Rios | AML · OSINT · Compliance Data</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-deep: #050505;
+      --bg-card: #0d0d0f;
+      --border-subtle: rgba(0, 243, 255, 0.15);
+      --neon-teal: #00f3ff;
+      --electric-purple: #bc13fe;
+      --text-primary: #e8e8e8;
+      --text-muted: #8a8a8a;
+      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --gradient-accent: linear-gradient(135deg, var(--neon-teal), var(--electric-purple));
+      --shadow-glow: 0 0 20px rgba(0, 243, 255, 0.2);
+      --radius: 8px;
+      --transition: 0.25s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Language Toggle - Sticky */
+    .lang-toggle {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 999px;
+      padding: 0.25rem;
+      box-shadow: var(--shadow-glow);
+    }
+
+    .lang-toggle button {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.4rem 0.75rem;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      background: transparent;
+      color: var(--text-muted);
+      transition: color var(--transition), background var(--transition);
+    }
+
+    .lang-toggle button:hover {
+      color: var(--neon-teal);
+    }
+
+    .lang-toggle button.active {
+      background: var(--gradient-accent);
+      color: var(--bg-deep);
+    }
+
+    /* Layout - mobile-first; wider on desktop for natural text flow */
+    .container {
+      width: 100%;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 1.25rem;
+    }
+
+    @media (min-width: 1024px) {
+      .container {
+        max-width: 1280px;
+        padding: 0 2rem;
+      }
+    }
+
+    @media (min-width: 1400px) {
+      .container {
+        max-width: 1440px;
+      }
+    }
+
+    /* Hero */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 5rem 0 4rem;
+      position: relative;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0, 243, 255, 0.06) 0%, transparent 50%),
+                  radial-gradient(ellipse 60% 40% at 80% 60%, rgba(188, 19, 254, 0.05) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .hero .container {
+      position: relative;
+      z-index: 1;
+      max-width: min(1000px, 90vw);
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero h1 {
+      font-family: var(--font-mono);
+      font-size: clamp(1.75rem, 5vw, 2.5rem);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      margin-bottom: 1rem;
+      background: var(--gradient-accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero .tagline {
+      font-family: var(--font-mono);
+      font-size: clamp(0.8rem, 2.5vw, 0.95rem);
+      color: var(--neon-teal);
+      margin-bottom: 1.25rem;
+      line-height: 1.7;
+      max-width: 100%;
+    }
+
+    @media (max-width: 640px) {
+      .hero .tagline {
+        font-size: 0.75rem;
+      }
+    }
+
+    .hero .subheadline {
+      font-size: clamp(0.95rem, 2.2vw, 1.05rem);
+      color: var(--text-muted);
+      max-width: 42ch;
+      margin-bottom: 2rem;
+    }
+
+    .hero .subheadline strong {
+      color: var(--electric-purple);
+      font-weight: 600;
+    }
+
+    .hero-cta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .btn {
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+
+    .btn-primary {
+      background: var(--gradient-accent);
+      color: var(--bg-deep);
+      border-color: transparent;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 30px rgba(0, 243, 255, 0.4), 0 0 20px rgba(188, 19, 254, 0.3);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--neon-teal);
+      border-color: var(--neon-teal);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(0, 243, 255, 0.08);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-glow);
+    }
+
+    .btn svg {
+      width: 1.2rem;
+      height: 1.2rem;
+    }
+
+    /* Section titles */
+    section {
+      padding: 4rem 0;
+    }
+
+    section h2 {
+      font-family: var(--font-mono);
+      font-size: clamp(1.25rem, 3vw, 1.5rem);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 2rem;
+      letter-spacing: 0.02em;
+    }
+
+    section h2::after {
+      content: '';
+      display: block;
+      width: 3rem;
+      height: 3px;
+      background: var(--gradient-accent);
+      margin-top: 0.5rem;
+      border-radius: 2px;
+    }
+
+    /* Skills Grid */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+
+    @media (min-width: 640px) {
+      .skills-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .skill-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
+    }
+
+    .skill-card:hover {
+      border-color: rgba(0, 243, 255, 0.4);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 24px rgba(0, 243, 255, 0.08);
+    }
+
+    .skill-card .icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      margin-bottom: 1rem;
+      color: var(--neon-teal);
+    }
+
+    .skill-card h3 {
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .skill-card p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* Featured Project */
+    .project-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+
+    .project-card:hover {
+      border-color: rgba(188, 19, 254, 0.35);
+      box-shadow: 0 0 28px rgba(188, 19, 254, 0.1);
+    }
+
+    .project-card h3 {
+      font-family: var(--font-mono);
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: var(--electric-purple);
+    }
+
+    .project-card .description {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      line-height: 1.65;
+    }
+
+    .tech-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .tech-tag {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding: 0.35rem 0.65rem;
+      background: rgba(0, 243, 255, 0.08);
+      color: var(--neon-teal);
+      border: 1px solid rgba(0, 243, 255, 0.2);
+      border-radius: 4px;
+    }
+
+    /* Footer */
+    footer {
+      padding: 2.5rem 0;
+      border-top: 1px solid var(--border-subtle);
+      text-align: center;
+    }
+
+    footer p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+  <!-- Language Toggle -->
+  <div class="lang-toggle">
+    <button type="button" id="lang-en" class="active" aria-label="English">EN</button>
+    <button type="button" id="lang-es" aria-label="Español">ES</button>
+  </div>
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="container">
+      <h1>Alejandro Mur Rios</h1>
+      <p class="tagline" data-en="AML & Anti-Fraud | OSINT Intelligence | Transaction Monitoring | Compliance Data Analytics" data-es="AML & Prevención de Fraude | Inteligencia OSINT | Monitoreo Transaccional | Analítica de Datos para Compliance">AML & Anti-Fraud | OSINT Intelligence | Transaction Monitoring | Compliance Data Analytics</p>
+      <p class="subheadline" data-en="Current KYC & QA Analyst at **Binance**. Bridging the gap between manual investigations and automated data engineering to detect sophisticated financial crime." data-es="Analista de KYC y QA en **Binance**. Uniendo la investigación manual con la ingeniería de datos para detectar delitos financieros sofisticados.">Current KYC & QA Analyst at <strong>Binance</strong>. Bridging the gap between manual investigations and automated data engineering to detect sophisticated financial crime.</p>
+      <div class="hero-cta">
+        <a href="mailto:muralejandro6@gmail.com" class="btn btn-primary">
+          <span data-en="Contact Me" data-es="Contactarme">Contact Me</span>
+        </a>
+        <a href="https://www.linkedin.com/in/alejandro-mur-/" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" aria-label="LinkedIn">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          LinkedIn
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Skills & Services -->
+  <section id="skills">
+    <div class="container">
+      <h2 data-en="Skills & Services" data-es="Habilidades y Servicios">Skills & Services</h2>
+      <div class="skills-grid">
+        <article class="skill-card">
+          <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9 9 0 100-18 9 9 0 000 18z" /></svg>
+          <h3 data-en="High-Risk Investigations (OSINT)" data-es="Investigaciones de Alto Riesgo (OSINT)">High-Risk Investigations (OSINT)</h3>
+          <p data-en="Deep-dive Enhanced Due Diligence (EDD) using OSINT tools and graph tracing to uncover hidden risks in complex corporate structures." data-es="Debida Diligencia Mejorada (EDD) profunda usando herramientas OSINT para descubrir riesgos ocultos.">Deep-dive Enhanced Due Diligence (EDD) using OSINT tools and graph tracing to uncover hidden risks in complex corporate structures.</p>
+        </article>
+        <article class="skill-card">
+          <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" /></svg>
+          <h3 data-en="AI Model Optimization" data-es="Optimización de Modelos IA">AI Model Optimization</h3>
+          <p data-en="Analyzing fraud patterns (ATO, Scams) to provide data-driven feedback loops that reduce false positives in ML detection models." data-es="Análisis de patrones de fraude (ATO, Estafas) para reducir falsos positivos en modelos de detección ML.">Analyzing fraud patterns (ATO, Scams) to provide data-driven feedback loops that reduce false positives in ML detection models.</p>
+        </article>
+        <article class="skill-card">
+          <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z" /></svg>
+          <h3 data-en="Automated Compliance Pipelines" data-es="Pipelines Automatizados">Automated Compliance Pipelines</h3>
+          <p data-en="Designing Python/SQL ETL workflows to automate Sanctions Screening and standardize entity data on Linux environments." data-es="Diseño de flujos ETL en Python/SQL para automatizar el screening de sanciones en entornos Linux.">Designing Python/SQL ETL workflows to automate Sanctions Screening and standardize entity data on Linux environments.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Project -->
+  <section id="project">
+    <div class="container">
+      <h2 data-en="Featured Project" data-es="Proyecto Destacado">Featured Project</h2>
+      <div class="project-card">
+        <h3 data-en="Automated Sanctions Screening Pipeline (Sanctions Watcher)" data-es="Pipeline de Screening de Sanciones (Sanctions Watcher)">Automated Sanctions Screening Pipeline (Sanctions Watcher)</h3>
+        <p class="description" data-en="A self-hosted ETL solution running on a Linux VPS. It automates the daily screening of customer databases against the official OFAC sanctions list, utilizing fuzzy matching logic to detect non-exact matches." data-es="Solución ETL self-hosted en VPS Linux. Automatiza el screening diario contra listas OFAC utilizando lógica de fuzzy matching para detectar coincidencias no exactas.">A self-hosted ETL solution running on a Linux VPS. It automates the daily screening of customer databases against the official OFAC sanctions list, utilizing fuzzy matching logic to detect non-exact matches.</p>
+        <div class="tech-tags">
+          <span class="tech-tag">Python</span>
+          <span class="tech-tag">PostgreSQL</span>
+          <span class="tech-tag">Cron</span>
+          <span class="tech-tag">Vim</span>
+          <span class="tech-tag">Pandas</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p data-en="Based in Buenos Aires. Open to global remote opportunities." data-es="Basado en Buenos Aires. Abierto a oportunidades remotas globales.">Based in Buenos Aires. Open to global remote opportunities.</p>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      const STORAGE_KEY = 'portfolio-lang';
+      let lang = localStorage.getItem(STORAGE_KEY) || 'en';
+
+      function setLang(newLang) {
+        lang = newLang;
+        localStorage.setItem(STORAGE_KEY, lang);
+        document.documentElement.lang = lang === 'es' ? 'es' : 'en';
+        document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+        document.getElementById('lang-es').classList.toggle('active', lang === 'es');
+        document.querySelectorAll('[data-en][data-es]').forEach(function (el) {
+          const text = el.getAttribute('data-' + lang) || '';
+          const hasStrong = text.includes('**');
+          if (hasStrong) {
+            const parts = text.split(/\*\*(.*?)\*\*/g);
+            el.innerHTML = parts.map(function (part, i) {
+              return i % 2 === 1 ? '<strong>' + part + '</strong>' : part;
+            }).join('');
+          } else {
+            el.textContent = text;
+          }
+        });
+      }
+
+      document.getElementById('lang-en').addEventListener('click', function () { setLang('en'); });
+      document.getElementById('lang-es').addEventListener('click', function () { setLang('es'); });
+      setLang(lang);
+    })();
+  </script>
+</body>
+</html>
